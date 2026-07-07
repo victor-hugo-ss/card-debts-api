@@ -1,7 +1,10 @@
 import Fastify from "fastify";
+import fastifyJwt from "@fastify/jwt";
+import { env } from "./shared/config/env.js";
 
 import { healthRoutes } from "./modules/health/health.routes.js";
 import { usersRoutes } from "./modules/users/users.routes.js";
+import { authRoutes } from "./modules/auth/auth.routes.js";
 import {
   setupSwagger,
   setupSwaggerUi,
@@ -14,6 +17,10 @@ export async function buildApp() {
     logger: true,
   });
 
+  await app.register(fastifyJwt, {
+    secret: env.JWT_SECRET,
+  });
+
   setupZodValidator(app);
 
   await setupSwagger(app);
@@ -22,6 +29,7 @@ export async function buildApp() {
 
   app.register(healthRoutes);
   app.register(usersRoutes);
+  app.register(authRoutes);
 
   await setupSwaggerUi(app);
 

@@ -1,6 +1,6 @@
 import { hash } from "bcryptjs";
 
-import { usersRepository } from "./user.repository.js";
+import { usersRepository } from "./users.repository.js";
 import type { CreateUserBody } from "./users.schema.js";
 import { AppError } from "../../shared/errors/app.error.js";
 
