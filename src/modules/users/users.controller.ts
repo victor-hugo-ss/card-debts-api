@@ -13,9 +13,8 @@ export const usersController = {
   },
 
   async me(request: FastifyRequest, reply: FastifyReply) {
-    return reply.send({
-      sub: request.user.sub,
-      role: request.user.role,
-    });
+    const user = await usersService.getProfile(request.user.sub);
+
+    return reply.send(user);
   },
 };

@@ -22,4 +22,14 @@ export const usersService = {
 
     return user;
   },
+
+  async getProfile(userId: string) {
+    const user = await usersRepository.findById(userId);
+
+    if (!user) {
+      throw new AppError("Usuário não encontrado", 404);
+    }
+
+    return user;
+  },
 };
