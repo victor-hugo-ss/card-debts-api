@@ -11,4 +11,11 @@ export const usersController = {
 
     return reply.status(201).send(user);
   },
+
+  async me(request: FastifyRequest, reply: FastifyReply) {
+    return reply.send({
+      sub: request.user.sub,
+      role: request.user.role,
+    });
+  },
 };

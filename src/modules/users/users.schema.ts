@@ -23,4 +23,16 @@ export const createUserSchema = {
   },
 };
 
+export const getProfileResponseSchema = z.object({
+  sub: z.string().uuid(),
+  role: z.enum(["ADMIN", "FRIEND"]),
+});
+
+export const getProfileSchema = {
+  tags: ["Users"],
+  summary: "Retorna o usuário autenticado",
+  response: {
+    200: getProfileResponseSchema,
+  },
+};
 export type CreateUserBody = z.infer<typeof createUserBodySchema>;
