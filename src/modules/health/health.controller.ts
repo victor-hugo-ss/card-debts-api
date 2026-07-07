@@ -1,5 +1,5 @@
 export async function healthController() {
   return {
-    status: "ok",
+    status: "ok" as const,
   };
 }
