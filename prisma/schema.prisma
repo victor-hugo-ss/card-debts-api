@@ -21,5 +21,24 @@ model User {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
+  creditCards CreditCard[]
+
   @@map("users")
+}
+
+model CreditCard {
+  id         String   @id @default(uuid())
+  name       String
+  brand      String?
+  lastDigits String?
+  limit      Decimal?
+  closingDay Int
+  dueDay     Int
+  ownerId    String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@map("credit_cards")
 }
