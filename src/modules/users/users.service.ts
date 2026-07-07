@@ -2,13 +2,14 @@ import { hash } from "bcryptjs";
 
 import { usersRepository } from "./user.repository.js";
 import type { CreateUserBody } from "./users.schema.js";
+import { AppError } from "../../shared/errors/app.error.js";
 
 export const usersService = {
   async create(data: CreateUserBody) {
     const userAlreadyExists = await usersRepository.findByEmail(data.email);
 
     if (userAlreadyExists) {
-      throw new Error("E-mail já cadastrado");
+      throw new AppError("E-mail já cadastrado", 409);
     }
 
     const passwordHash = await hash(data.password, 8);
