@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { bearerAuthSecurity } from "../../shared/docs/security.js";
+
 export const createUserBodySchema = z.object({
   name: z.string().min(3, "O nome deve ter pelo menos 3 caracteres"),
   email: z.string().email("Informe um e-mail válido"),
@@ -26,6 +28,7 @@ export const createUserSchema = {
 export const getProfileSchema = {
   tags: ["Users"],
   summary: "Retorna o usuário autenticado",
+  ...bearerAuthSecurity,
   response: {
     200: userResponseSchema,
   },

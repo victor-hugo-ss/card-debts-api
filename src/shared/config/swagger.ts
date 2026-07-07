@@ -21,6 +21,15 @@ export async function setupSwagger(app: FastifyInstance) {
           "API para gerenciar dívidas de amigos em cartões de crédito",
         version: "1.0.0",
       },
+      components: {
+        securitySchemes: {
+          bearerAuth: {
+            type: "http",
+            scheme: "bearer",
+            bearerFormat: "JWT",
+          },
+        },
+      },
     },
     transform: jsonSchemaTransform,
   });
