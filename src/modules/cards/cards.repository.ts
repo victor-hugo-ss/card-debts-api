@@ -22,4 +22,13 @@ export const creditCardsRepository = {
       },
     });
   },
+
+  findByIdAndOwnerId(id: string, ownerId: string) {
+    return prisma.creditCard.findFirst({
+      where: {
+        id,
+        ownerId,
+      },
+    });
+  },
 };

@@ -56,4 +56,19 @@ export const listCreditCardsSchema = {
   },
 };
 
+export const creditCardParamsSchema = z.object({
+  id: z.string().uuid("Informe um ID válido"),
+});
+
+export const getCreditCardSchema = {
+  tags: ["Credit Cards"],
+  summary: "Busca um cartão de crédito por ID",
+  ...bearerAuthSecurity,
+  params: creditCardParamsSchema,
+  response: {
+    200: creditCardResponseSchema,
+  },
+};
+
+export type CreditCardParams = z.infer<typeof creditCardParamsSchema>;
 export type CreateCreditCardBody = z.infer<typeof createCreditCardBodySchema>;

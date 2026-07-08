@@ -6,6 +6,7 @@ import { roleMiddleware } from "../../shared/middlewares/role.middleware.js";
 import { creditCardsController } from "./cards.controller.js";
 import {
   createCreditCardSchema,
+  getCreditCardSchema,
   listCreditCardsSchema,
 } from "./cards.schema.js";
 
@@ -28,5 +29,14 @@ export async function creditCardsRoutes(app: FastifyInstance) {
       schema: listCreditCardsSchema,
     },
     creditCardsController.list,
+  );
+
+  typedApp.get(
+    "/credit-cards/:id",
+    {
+      preHandler: [authMiddleware, roleMiddleware(["ADMIN"])],
+      schema: getCreditCardSchema,
+    },
+    creditCardsController.getById,
   );
 }
