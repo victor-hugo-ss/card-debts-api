@@ -37,6 +37,20 @@ export const listInstallmentsQuerySchema = z.object({
     .optional(),
   friendId: z.string().uuid("Informe um amigo válido").optional(),
   creditCardId: z.string().uuid("Informe um cartão válido").optional(),
+  page: z.coerce.number().int().min(1).default(1),
+  perPage: z.coerce.number().int().min(1).max(100).default(10),
+});
+
+export const paginationMetaSchema = z.object({
+  page: z.number(),
+  perPage: z.number(),
+  total: z.number(),
+  totalPages: z.number(),
+});
+
+export const paginatedInstallmentsResponseSchema = z.object({
+  data: z.array(installmentResponseSchema),
+  meta: paginationMetaSchema,
 });
 
 export const listInstallmentsSchema = {
@@ -45,7 +59,7 @@ export const listInstallmentsSchema = {
   ...bearerAuthSecurity,
   querystring: listInstallmentsQuerySchema,
   response: {
-    200: z.array(installmentResponseSchema),
+    200: paginatedInstallmentsResponseSchema,
   },
 };
 

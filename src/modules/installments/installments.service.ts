@@ -4,7 +4,18 @@ import { AppError } from "../../shared/errors/app.error.js";
 
 export const installmentsService = {
   async list(ownerId: string, filters: ListInstallmentsQuery) {
-    return installmentsRepository.findManyByOwnerId(ownerId, filters);
+    const [installments, total] =
+      await installmentsRepository.findManyByOwnerId(ownerId, filters);
+
+    return {
+      data: installments,
+      meta: {
+        page: filters.page,
+        perPage: filters.perPage,
+        total,
+        totalPages: Math.ceil(total / filters.perPage),
+      },
+    };
   },
 
   async pay(id: string, ownerId: string) {

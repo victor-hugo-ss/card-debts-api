@@ -1,16 +1,9 @@
 import type { Prisma } from "../../generated/prisma/client.js";
 import { prisma } from "../../shared/database/prisma-client.js";
+import type { ListInstallmentsQuery } from "./installments.schema.js";
 
 export const installmentsRepository = {
-  findManyByOwnerId(
-    ownerId: string,
-    filters: {
-      status?: "PENDING" | "PAID";
-      month?: string;
-      friendId?: string;
-      creditCardId?: string;
-    },
-  ) {
+  findManyByOwnerId(ownerId: string, filters: ListInstallmentsQuery) {
     const where: Prisma.InstallmentWhereInput = {
       purchase: {
         ownerId,
@@ -32,36 +25,45 @@ export const installmentsRepository = {
       };
     }
 
-    return prisma.installment.findMany({
-      where,
-      include: {
-        purchase: {
-          select: {
-            id: true,
-            description: true,
-            purchaseDate: true,
-            friend: {
-              select: {
-                id: true,
-                name: true,
-                email: true,
+    const skip = (filters.page - 1) * filters.perPage;
+
+    return prisma.$transaction([
+      prisma.installment.findMany({
+        where,
+        include: {
+          purchase: {
+            select: {
+              id: true,
+              description: true,
+              purchaseDate: true,
+              friend: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                },
               },
-            },
-            creditCard: {
-              select: {
-                id: true,
-                name: true,
-                brand: true,
-                lastDigits: true,
+              creditCard: {
+                select: {
+                  id: true,
+                  name: true,
+                  brand: true,
+                  lastDigits: true,
+                },
               },
             },
           },
         },
-      },
-      orderBy: {
-        dueDate: "asc",
-      },
-    });
+        orderBy: {
+          dueDate: "asc",
+        },
+        skip,
+        take: filters.perPage,
+      }),
+      prisma.installment.count({
+        where,
+      }),
+    ]);
   },
 
   findByIdAndOwnerId(id: string, ownerId: string) {
