@@ -20,4 +20,10 @@ export const creditCardsController = {
 
     return reply.status(201).send(creditCard);
   },
+
+  async list(request: FastifyRequest, reply: FastifyReply) {
+    const creditCards = await creditCardsService.list(request.user.sub);
+
+    return reply.send(creditCards);
+  },
 };

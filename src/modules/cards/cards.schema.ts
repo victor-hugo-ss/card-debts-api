@@ -47,4 +47,13 @@ export const createCreditCardSchema = {
   },
 };
 
+export const listCreditCardsSchema = {
+  tags: ["Credit Cards"],
+  summary: "Lista os cartões de crédito",
+  ...bearerAuthSecurity,
+  response: {
+    200: z.array(creditCardResponseSchema),
+  },
+};
+
 export type CreateCreditCardBody = z.infer<typeof createCreditCardBodySchema>;

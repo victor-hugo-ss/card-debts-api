@@ -9,4 +9,8 @@ export const creditCardsService = {
   async create(data: CreateCreditCardServiceData) {
     return creditCardsRepository.create(data);
   },
+
+  async list(ownerId: string) {
+    return creditCardsRepository.findManyByOwnerId(ownerId);
+  },
 };

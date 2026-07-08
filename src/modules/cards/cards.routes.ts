@@ -4,7 +4,10 @@ import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { authMiddleware } from "../../shared/middlewares/auth.middleware.js";
 import { roleMiddleware } from "../../shared/middlewares/role.middleware.js";
 import { creditCardsController } from "./cards.controller.js";
-import { createCreditCardSchema } from "./cards.schema.js";
+import {
+  createCreditCardSchema,
+  listCreditCardsSchema,
+} from "./cards.schema.js";
 
 export async function creditCardsRoutes(app: FastifyInstance) {
   const typedApp = app.withTypeProvider<ZodTypeProvider>();
@@ -16,5 +19,14 @@ export async function creditCardsRoutes(app: FastifyInstance) {
       schema: createCreditCardSchema,
     },
     creditCardsController.create,
+  );
+
+  typedApp.get(
+    "/credit-cards",
+    {
+      preHandler: [authMiddleware, roleMiddleware(["ADMIN"])],
+      schema: listCreditCardsSchema,
+    },
+    creditCardsController.list,
   );
 }

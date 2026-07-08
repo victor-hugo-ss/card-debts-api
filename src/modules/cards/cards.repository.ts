@@ -11,4 +11,15 @@ export const creditCardsRepository = {
       data,
     });
   },
+
+  findManyByOwnerId(ownerId: string) {
+    return prisma.creditCard.findMany({
+      where: {
+        ownerId,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+  },
 };
