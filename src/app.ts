@@ -5,6 +5,8 @@ import { env } from "./shared/config/env.js";
 import { healthRoutes } from "./modules/health/health.routes.js";
 import { usersRoutes } from "./modules/users/users.routes.js";
 import { authRoutes } from "./modules/auth/auth.routes.js";
+import { creditCardsRoutes } from "./modules/cards/cards.routes.js";
+
 import {
   setupSwagger,
   setupSwaggerUi,
@@ -30,6 +32,7 @@ export async function buildApp() {
   app.register(healthRoutes);
   app.register(usersRoutes);
   app.register(authRoutes);
+  app.register(creditCardsRoutes);
 
   await setupSwaggerUi(app);
 
