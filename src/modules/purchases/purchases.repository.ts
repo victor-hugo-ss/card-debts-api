@@ -1,5 +1,9 @@
 import { prisma } from "../../shared/database/prisma-client.js";
-import type { CreatePurchaseBody } from "./purchases.schema.js";
+import type { Prisma } from "../../generated/prisma/client.js";
+import type {
+  CreatePurchaseBody,
+  ListPurchasesQuery,
+} from "./purchases.schema.js";
 
 type InstallmentData = {
   number: number;
@@ -66,11 +70,27 @@ export const purchasesRepository = {
     });
   },
 
-  findManyByOwnerId(ownerId: string) {
+  findManyByOwnerId(ownerId: string, filters: ListPurchasesQuery) {
+    const where: Prisma.PurchaseWhereInput = {
+      ownerId,
+      friendId: filters.friendId,
+      creditCardId: filters.creditCardId,
+    };
+
+    if (filters.month) {
+      const [year, month] = filters.month.split("-").map(Number);
+
+      const startDate = new Date(Date.UTC(year, month - 1, 1));
+      const endDate = new Date(Date.UTC(year, month, 1));
+
+      where.purchaseDate = {
+        gte: startDate,
+        lt: endDate,
+      };
+    }
+
     return prisma.purchase.findMany({
-      where: {
-        ownerId,
-      },
+      where,
       include: {
         friend: {
           select: {

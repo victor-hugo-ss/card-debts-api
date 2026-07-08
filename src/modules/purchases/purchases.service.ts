@@ -1,5 +1,8 @@
 import { AppError } from "../../shared/errors/app.error.js";
-import type { CreatePurchaseBody } from "./purchases.schema.js";
+import type {
+  CreatePurchaseBody,
+  ListPurchasesQuery,
+} from "./purchases.schema.js";
 import { purchasesRepository } from "./purchases.repository.js";
 
 type CreatePurchaseServiceData = CreatePurchaseBody & {
@@ -73,8 +76,8 @@ export const purchasesService = {
     });
   },
 
-  async list(ownerId: string) {
-    return purchasesRepository.findManyByOwnerId(ownerId);
+  async list(ownerId: string, filters: ListPurchasesQuery) {
+    return purchasesRepository.findManyByOwnerId(ownerId, filters);
   },
 
   async getById(id: string, ownerId: string) {

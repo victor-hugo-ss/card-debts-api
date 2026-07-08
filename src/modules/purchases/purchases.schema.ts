@@ -54,6 +54,15 @@ export const purchaseParamsSchema = z.object({
   id: z.string().uuid("Informe um ID válido"),
 });
 
+export const listPurchasesQuerySchema = z.object({
+  friendId: z.string().uuid("Informe um amigo válido").optional(),
+  creditCardId: z.string().uuid("Informe um cartão válido").optional(),
+  month: z
+    .string()
+    .regex(/^\d{4}-\d{2}$/, "Informe o mês no formato YYYY-MM")
+    .optional(),
+});
+
 export const createPurchaseSchema = {
   tags: ["Purchases"],
   summary: "Cadastra uma compra e gera suas parcelas",
@@ -68,6 +77,7 @@ export const listPurchasesSchema = {
   tags: ["Purchases"],
   summary: "Lista as compras cadastradas",
   ...bearerAuthSecurity,
+  querystring: listPurchasesQuerySchema,
   response: {
     200: z.array(purchaseResponseSchema),
   },
@@ -83,5 +93,6 @@ export const getPurchaseSchema = {
   },
 };
 
+export type ListPurchasesQuery = z.infer<typeof listPurchasesQuerySchema>;
 export type PurchaseParams = z.infer<typeof purchaseParamsSchema>;
 export type CreatePurchaseBody = z.infer<typeof createPurchaseBodySchema>;

@@ -3,8 +3,10 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import {
   createPurchaseBodySchema,
   purchaseParamsSchema,
+  listPurchasesQuerySchema,
   type CreatePurchaseBody,
   type PurchaseParams,
+  type ListPurchasesQuery,
 } from "./purchases.schema.js";
 import { purchasesService } from "./purchases.service.js";
 
@@ -23,7 +25,11 @@ export const purchasesController = {
   },
 
   async list(request: FastifyRequest, reply: FastifyReply) {
-    const purchases = await purchasesService.list(request.user.sub);
+    const filters = listPurchasesQuerySchema.parse(
+      request.query,
+    ) as ListPurchasesQuery;
+
+    const purchases = await purchasesService.list(request.user.sub, filters);
 
     return reply.send(purchases);
   },
