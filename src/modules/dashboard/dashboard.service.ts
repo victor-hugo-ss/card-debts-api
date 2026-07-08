@@ -9,6 +9,8 @@ export const dashboardService = {
       (summary, installment) => {
         const amount = Number(installment.amount);
 
+        summary.totalPurchases += amount;
+
         if (installment.status === "PENDING") {
           summary.totalPending += amount;
           summary.pendingInstallments += 1;
@@ -18,8 +20,6 @@ export const dashboardService = {
           summary.totalPaid += amount;
           summary.paidInstallments += 1;
         }
-
-        summary.totalPurchases += amount;
 
         return summary;
       },

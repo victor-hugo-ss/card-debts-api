@@ -10,7 +10,7 @@ export async function dashboardRoutes(app: FastifyInstance) {
   const typedApp = app.withTypeProvider<ZodTypeProvider>();
 
   typedApp.get(
-    "/dashboard",
+    "/dashboard/summary",
     {
       preHandler: [authMiddleware, roleMiddleware(["ADMIN"])],
       schema: getDashboardSummarySchema,
