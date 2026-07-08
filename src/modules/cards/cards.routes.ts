@@ -6,6 +6,7 @@ import { roleMiddleware } from "../../shared/middlewares/role.middleware.js";
 import { creditCardsController } from "./cards.controller.js";
 import {
   createCreditCardSchema,
+  deleteCreditCardSchema,
   getCreditCardSchema,
   listCreditCardsSchema,
   updateCreditCardSchema,
@@ -48,5 +49,14 @@ export async function creditCardsRoutes(app: FastifyInstance) {
       schema: updateCreditCardSchema,
     },
     creditCardsController.update,
+  );
+
+  typedApp.delete(
+    "/credit-cards/:id",
+    {
+      preHandler: [authMiddleware, roleMiddleware(["ADMIN"])],
+      schema: deleteCreditCardSchema,
+    },
+    creditCardsController.delete,
   );
 }

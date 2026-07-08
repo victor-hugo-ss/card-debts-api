@@ -38,4 +38,10 @@ export const creditCardsService = {
 
     return creditCardsRepository.update(id, data);
   },
+
+  async delete(id: string, ownerId: string) {
+    await this.getById(id, ownerId);
+
+    await creditCardsRepository.delete(id);
+  },
 };

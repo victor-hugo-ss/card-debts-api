@@ -43,4 +43,12 @@ export const creditCardsRepository = {
       data,
     });
   },
+
+  delete(id: string) {
+    return prisma.creditCard.delete({
+      where: {
+        id,
+      },
+    });
+  },
 };

@@ -57,4 +57,14 @@ export const creditCardsController = {
 
     return reply.send(creditCard);
   },
+
+  async delete(request: FastifyRequest, reply: FastifyReply) {
+    const { id } = creditCardParamsSchema.parse(
+      request.params,
+    ) as CreditCardParams;
+
+    await creditCardsService.delete(id, request.user.sub);
+
+    return reply.status(204).send();
+  },
 };
