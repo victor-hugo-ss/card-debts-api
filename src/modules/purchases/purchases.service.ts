@@ -77,7 +77,20 @@ export const purchasesService = {
   },
 
   async list(ownerId: string, filters: ListPurchasesQuery) {
-    return purchasesRepository.findManyByOwnerId(ownerId, filters);
+    const [purchases, total] = await purchasesRepository.findManyByOwnerId(
+      ownerId,
+      filters,
+    );
+
+    return {
+      data: purchases,
+      meta: {
+        page: filters.page,
+        perPage: filters.perPage,
+        total,
+        totalPages: Math.ceil(total / filters.perPage),
+      },
+    };
   },
 
   async getById(id: string, ownerId: string) {

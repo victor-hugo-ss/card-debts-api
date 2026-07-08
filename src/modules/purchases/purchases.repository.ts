@@ -89,34 +89,43 @@ export const purchasesRepository = {
       };
     }
 
-    return prisma.purchase.findMany({
-      where,
-      include: {
-        friend: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
+    const skip = (filters.page - 1) * filters.perPage;
+
+    return prisma.$transaction([
+      prisma.purchase.findMany({
+        where,
+        include: {
+          friend: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+          creditCard: {
+            select: {
+              id: true,
+              name: true,
+              brand: true,
+              lastDigits: true,
+            },
+          },
+          installments: {
+            orderBy: {
+              number: "asc",
+            },
           },
         },
-        creditCard: {
-          select: {
-            id: true,
-            name: true,
-            brand: true,
-            lastDigits: true,
-          },
+        orderBy: {
+          purchaseDate: "desc",
         },
-        installments: {
-          orderBy: {
-            number: "asc",
-          },
-        },
-      },
-      orderBy: {
-        purchaseDate: "desc",
-      },
-    });
+        skip,
+        take: filters.perPage,
+      }),
+      prisma.purchase.count({
+        where,
+      }),
+    ]);
   },
 
   findByIdAndOwnerId(id: string, ownerId: string) {

@@ -61,6 +61,20 @@ export const listPurchasesQuerySchema = z.object({
     .string()
     .regex(/^\d{4}-\d{2}$/, "Informe o mês no formato YYYY-MM")
     .optional(),
+  page: z.coerce.number().int().min(1).default(1),
+  perPage: z.coerce.number().int().min(1).max(100).default(10),
+});
+
+export const paginationMetaSchema = z.object({
+  page: z.number(),
+  perPage: z.number(),
+  total: z.number(),
+  totalPages: z.number(),
+});
+
+export const paginatedPurchasesResponseSchema = z.object({
+  data: z.array(purchaseResponseSchema),
+  meta: paginationMetaSchema,
 });
 
 export const createPurchaseSchema = {
@@ -79,7 +93,7 @@ export const listPurchasesSchema = {
   ...bearerAuthSecurity,
   querystring: listPurchasesQuerySchema,
   response: {
-    200: z.array(purchaseResponseSchema),
+    200: paginatedPurchasesResponseSchema,
   },
 };
 
