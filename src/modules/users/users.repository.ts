@@ -50,4 +50,21 @@ export const usersRepository = {
       },
     });
   },
+
+  findManyFriends() {
+    return prisma.user.findMany({
+      where: {
+        role: "FRIEND",
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        createdAt: true,
+      },
+      orderBy: {
+        name: "asc",
+      },
+    });
+  },
 };

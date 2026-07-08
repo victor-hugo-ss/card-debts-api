@@ -32,4 +32,8 @@ export const usersService = {
 
     return user;
   },
+
+  async listFriends() {
+    return usersRepository.findManyFriends();
+  },
 };

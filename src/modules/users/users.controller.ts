@@ -17,4 +17,10 @@ export const usersController = {
 
     return reply.send(user);
   },
+
+  async listFriends(_request: FastifyRequest, reply: FastifyReply) {
+    const friends = await usersService.listFriends();
+
+    return reply.send(friends);
+  },
 };

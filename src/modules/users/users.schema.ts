@@ -16,6 +16,22 @@ export const userResponseSchema = z.object({
   createdAt: z.date(),
 });
 
+export const friendResponseSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string(),
+  email: z.string().email(),
+  createdAt: z.date(),
+});
+
+export const listFriendsSchema = {
+  tags: ["Users"],
+  summary: "Lista os amigos cadastrados",
+  ...bearerAuthSecurity,
+  response: {
+    200: z.array(friendResponseSchema),
+  },
+};
+
 export const createUserSchema = {
   tags: ["Users"],
   summary: "Cria um novo usuário",

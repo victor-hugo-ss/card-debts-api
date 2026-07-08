@@ -2,8 +2,13 @@ import type { FastifyInstance } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 
 import { authMiddleware } from "../../shared/middlewares/auth.middleware.js";
+import { roleMiddleware } from "../../shared/middlewares/role.middleware.js";
 import { usersController } from "./users.controller.js";
-import { createUserSchema, getProfileSchema } from "./users.schema.js";
+import {
+  createUserSchema,
+  getProfileSchema,
+  listFriendsSchema,
+} from "./users.schema.js";
 
 export async function usersRoutes(app: FastifyInstance) {
   const typedApp = app.withTypeProvider<ZodTypeProvider>();
@@ -23,5 +28,14 @@ export async function usersRoutes(app: FastifyInstance) {
       schema: getProfileSchema,
     },
     usersController.me,
+  );
+
+  app.get(
+    "/users/friends",
+    {
+      preHandler: [authMiddleware, roleMiddleware(["ADMIN"])],
+      schema: listFriendsSchema,
+    },
+    usersController.listFriends,
   );
 }
