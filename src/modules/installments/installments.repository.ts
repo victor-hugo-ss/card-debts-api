@@ -108,4 +108,40 @@ export const installmentsRepository = {
       },
     });
   },
+
+  markAsPending(id: string) {
+    return prisma.installment.update({
+      where: {
+        id,
+      },
+      data: {
+        status: "PENDING",
+        paidAt: null,
+      },
+      include: {
+        purchase: {
+          select: {
+            id: true,
+            description: true,
+            purchaseDate: true,
+            friend: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+              },
+            },
+            creditCard: {
+              select: {
+                id: true,
+                name: true,
+                brand: true,
+                lastDigits: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  },
 };

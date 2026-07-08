@@ -22,4 +22,14 @@ export const installmentsController = {
 
     return reply.send(installment);
   },
+
+  async unpay(request: FastifyRequest, reply: FastifyReply) {
+    const { id } = installmentParamsSchema.parse(
+      request.params,
+    ) as InstallmentParams;
+
+    const installment = await installmentsService.unpay(id, request.user.sub);
+
+    return reply.send(installment);
+  },
 };

@@ -52,4 +52,14 @@ export const payInstallmentSchema = {
   },
 };
 
+export const unpayInstallmentSchema = {
+  tags: ["Installments"],
+  summary: "Desfaz o pagamento de uma parcela",
+  ...bearerAuthSecurity,
+  params: installmentParamsSchema,
+  response: {
+    200: installmentResponseSchema,
+  },
+};
+
 export type InstallmentParams = z.infer<typeof installmentParamsSchema>;

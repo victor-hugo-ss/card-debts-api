@@ -22,4 +22,21 @@ export const installmentsService = {
 
     return installmentsRepository.markAsPaid(id);
   },
+
+  async unpay(id: string, ownerId: string) {
+    const installment = await installmentsRepository.findByIdAndOwnerId(
+      id,
+      ownerId,
+    );
+
+    if (!installment) {
+      throw new AppError("Parcela não encontrada", 404);
+    }
+
+    if (installment.status === "PENDING") {
+      throw new AppError("Parcela ainda não foi paga", 409);
+    }
+
+    return installmentsRepository.markAsPending(id);
+  },
 };

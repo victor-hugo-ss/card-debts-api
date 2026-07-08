@@ -7,6 +7,7 @@ import { installmentsController } from "./installments.controller.js";
 import {
   listInstallmentsSchema,
   payInstallmentSchema,
+  unpayInstallmentSchema,
 } from "./installments.schema.js";
 
 export async function installmentsRoutes(app: FastifyInstance) {
@@ -28,5 +29,14 @@ export async function installmentsRoutes(app: FastifyInstance) {
       schema: payInstallmentSchema,
     },
     installmentsController.pay,
+  );
+
+  typedApp.patch(
+    "/installments/:id/unpay",
+    {
+      preHandler: [authMiddleware, roleMiddleware(["ADMIN"])],
+      schema: unpayInstallmentSchema,
+    },
+    installmentsController.unpay,
   );
 }
