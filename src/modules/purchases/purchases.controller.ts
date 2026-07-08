@@ -19,4 +19,10 @@ export const purchasesController = {
 
     return reply.status(201).send(purchase);
   },
+
+  async list(request: FastifyRequest, reply: FastifyReply) {
+    const purchases = await purchasesService.list(request.user.sub);
+
+    return reply.send(purchases);
+  },
 };

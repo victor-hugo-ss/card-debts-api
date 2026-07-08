@@ -46,7 +46,55 @@ export const purchasesRepository = {
         },
       },
       include: {
+        friend: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        creditCard: {
+          select: {
+            id: true,
+            name: true,
+            brand: true,
+            lastDigits: true,
+          },
+        },
         installments: true,
+      },
+    });
+  },
+
+  findManyByOwnerId(ownerId: string) {
+    return prisma.purchase.findMany({
+      where: {
+        ownerId,
+      },
+      include: {
+        friend: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        creditCard: {
+          select: {
+            id: true,
+            name: true,
+            brand: true,
+            lastDigits: true,
+          },
+        },
+        installments: {
+          orderBy: {
+            number: "asc",
+          },
+        },
+      },
+      orderBy: {
+        purchaseDate: "desc",
       },
     });
   },

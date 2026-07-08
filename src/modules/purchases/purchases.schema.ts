@@ -22,6 +22,19 @@ export const installmentResponseSchema = z.object({
   paidAt: z.date().nullable(),
 });
 
+export const purchaseFriendResponseSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string(),
+  email: z.string().email(),
+});
+
+export const purchaseCreditCardResponseSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string(),
+  brand: z.string().nullable(),
+  lastDigits: z.string().nullable(),
+});
+
 export const purchaseResponseSchema = z.object({
   id: z.string().uuid(),
   description: z.string(),
@@ -32,6 +45,8 @@ export const purchaseResponseSchema = z.object({
   friendId: z.string().uuid(),
   creditCardId: z.string().uuid(),
   createdAt: z.date(),
+  friend: purchaseFriendResponseSchema,
+  creditCard: purchaseCreditCardResponseSchema,
   installments: z.array(installmentResponseSchema),
 });
 
@@ -42,6 +57,15 @@ export const createPurchaseSchema = {
   body: createPurchaseBodySchema,
   response: {
     201: purchaseResponseSchema,
+  },
+};
+
+export const listPurchasesSchema = {
+  tags: ["Purchases"],
+  summary: "Lista as compras cadastradas",
+  ...bearerAuthSecurity,
+  response: {
+    200: z.array(purchaseResponseSchema),
   },
 };
 

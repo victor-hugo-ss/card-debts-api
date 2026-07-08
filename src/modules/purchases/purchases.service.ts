@@ -68,4 +68,8 @@ export const purchasesService = {
       installments,
     });
   },
+
+  async list(ownerId: string) {
+    return purchasesRepository.findManyByOwnerId(ownerId);
+  },
 };
