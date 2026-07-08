@@ -8,6 +8,7 @@ import {
   createUserSchema,
   getProfileSchema,
   listFriendsSchema,
+  createFriendByAdminSchema,
 } from "./users.schema.js";
 
 export async function usersRoutes(app: FastifyInstance) {
@@ -37,5 +38,14 @@ export async function usersRoutes(app: FastifyInstance) {
       schema: listFriendsSchema,
     },
     usersController.listFriends,
+  );
+
+  app.post(
+    "/admin/friends",
+    {
+      preHandler: [authMiddleware, roleMiddleware(["ADMIN"])],
+      schema: createFriendByAdminSchema,
+    },
+    usersController.createFriendByAdmin,
   );
 }

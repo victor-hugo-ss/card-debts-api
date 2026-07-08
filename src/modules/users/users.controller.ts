@@ -1,6 +1,10 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 
-import { createUserBodySchema } from "./users.schema.js";
+import {
+  createUserBodySchema,
+  createFriendByAdminBodySchema,
+  type CreateFriendByAdminInput,
+} from "./users.schema.js";
 import { usersService } from "./users.service.js";
 
 export const usersController = {
@@ -22,5 +26,15 @@ export const usersController = {
     const friends = await usersService.listFriends();
 
     return reply.send(friends);
+  },
+
+  async createFriendByAdmin(request: FastifyRequest, reply: FastifyReply) {
+    const data = createFriendByAdminBodySchema.parse(
+      request.body,
+    ) as CreateFriendByAdminInput;
+
+    const friend = await usersService.createFriendByAdmin(data);
+
+    return reply.status(201).send(friend);
   },
 };
