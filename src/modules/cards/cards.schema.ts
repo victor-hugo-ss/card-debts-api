@@ -70,5 +70,19 @@ export const getCreditCardSchema = {
   },
 };
 
+export const updateCreditCardBodySchema = createCreditCardBodySchema.partial();
+
+export const updateCreditCardSchema = {
+  tags: ["Credit Cards"],
+  summary: "Atualiza um cartão de crédito",
+  ...bearerAuthSecurity,
+  params: creditCardParamsSchema,
+  body: updateCreditCardBodySchema,
+  response: {
+    200: creditCardResponseSchema,
+  },
+};
+
+export type UpdateCreditCardBody = z.infer<typeof updateCreditCardBodySchema>;
 export type CreditCardParams = z.infer<typeof creditCardParamsSchema>;
 export type CreateCreditCardBody = z.infer<typeof createCreditCardBodySchema>;

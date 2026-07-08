@@ -1,6 +1,10 @@
 import { AppError } from "../../shared/errors/app.error.js";
 
-import type { CreateCreditCardBody } from "./cards.schema.js";
+import type {
+  CreateCreditCardBody,
+  UpdateCreditCardBody,
+} from "./cards.schema.js";
+
 import { creditCardsRepository } from "./cards.repository.js";
 
 type CreateCreditCardServiceData = CreateCreditCardBody & {
@@ -27,5 +31,11 @@ export const creditCardsService = {
     }
 
     return creditCard;
+  },
+
+  async update(id: string, ownerId: string, data: UpdateCreditCardBody) {
+    await this.getById(id, ownerId);
+
+    return creditCardsRepository.update(id, data);
   },
 };

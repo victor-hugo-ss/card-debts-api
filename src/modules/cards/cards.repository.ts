@@ -1,5 +1,8 @@
 import { prisma } from "../../shared/database/prisma-client.js";
-import type { CreateCreditCardBody } from "./cards.schema.js";
+import type {
+  CreateCreditCardBody,
+  UpdateCreditCardBody,
+} from "./cards.schema.js";
 
 type CreateCreditCardData = CreateCreditCardBody & {
   ownerId: string;
@@ -29,6 +32,15 @@ export const creditCardsRepository = {
         id,
         ownerId,
       },
+    });
+  },
+
+  update(id: string, data: UpdateCreditCardBody) {
+    return prisma.creditCard.update({
+      where: {
+        id,
+      },
+      data,
     });
   },
 };

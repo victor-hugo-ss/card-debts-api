@@ -8,6 +8,7 @@ import {
   createCreditCardSchema,
   getCreditCardSchema,
   listCreditCardsSchema,
+  updateCreditCardSchema,
 } from "./cards.schema.js";
 
 export async function creditCardsRoutes(app: FastifyInstance) {
@@ -38,5 +39,14 @@ export async function creditCardsRoutes(app: FastifyInstance) {
       schema: getCreditCardSchema,
     },
     creditCardsController.getById,
+  );
+
+  typedApp.put(
+    "/credit-cards/:id",
+    {
+      preHandler: [authMiddleware, roleMiddleware(["ADMIN"])],
+      schema: updateCreditCardSchema,
+    },
+    creditCardsController.update,
   );
 }
