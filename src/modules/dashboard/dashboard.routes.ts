@@ -5,6 +5,7 @@ import { authMiddleware } from "../../shared/middlewares/auth.middleware.js";
 import { roleMiddleware } from "../../shared/middlewares/role.middleware.js";
 import { dashboardController } from "./dashboard.controller.js";
 import {
+  getDashboardByCreditCardSchema,
   getDashboardByFriendSchema,
   getDashboardSummarySchema,
 } from "./dashboard.schema.js";
@@ -28,5 +29,14 @@ export async function dashboardRoutes(app: FastifyInstance) {
       schema: getDashboardByFriendSchema,
     },
     dashboardController.byFriend,
+  );
+
+  typedApp.get(
+    "/dashboard/by-credit-card",
+    {
+      preHandler: [authMiddleware, roleMiddleware(["ADMIN"])],
+      schema: getDashboardByCreditCardSchema,
+    },
+    dashboardController.byCreditCard,
   );
 }

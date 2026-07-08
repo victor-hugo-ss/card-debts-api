@@ -20,6 +20,18 @@ export const dashboardByFriendResponseSchema = z.object({
   paidInstallments: z.number(),
 });
 
+export const dashboardByCreditCardResponseSchema = z.object({
+  creditCardId: z.string().uuid(),
+  creditCardName: z.string(),
+  creditCardBrand: z.string().nullable(),
+  creditCardLastDigits: z.string().nullable(),
+  totalPending: z.number(),
+  totalPaid: z.number(),
+  totalPurchases: z.number(),
+  pendingInstallments: z.number(),
+  paidInstallments: z.number(),
+});
+
 export const getDashboardSummarySchema = {
   tags: ["Dashboard"],
   summary: "Retorna o resumo geral do dashboard",
@@ -35,5 +47,14 @@ export const getDashboardByFriendSchema = {
   ...bearerAuthSecurity,
   response: {
     200: z.array(dashboardByFriendResponseSchema),
+  },
+};
+
+export const getDashboardByCreditCardSchema = {
+  tags: ["Dashboard"],
+  summary: "Retorna o resumo do dashboard por cartão",
+  ...bearerAuthSecurity,
+  response: {
+    200: z.array(dashboardByCreditCardResponseSchema),
   },
 };

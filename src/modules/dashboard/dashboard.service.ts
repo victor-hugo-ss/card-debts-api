@@ -82,4 +82,62 @@ export const dashboardService = {
 
     return byFriend;
   },
+
+  async getByCreditCard(ownerId: string) {
+    const installments =
+      await dashboardRepository.findInstallmentsWithCreditCardByOwnerId(
+        ownerId,
+      );
+
+    const byCreditCard: Array<{
+      creditCardId: string;
+      creditCardName: string;
+      creditCardBrand: string | null;
+      creditCardLastDigits: string | null;
+      totalPending: number;
+      totalPaid: number;
+      totalPurchases: number;
+      pendingInstallments: number;
+      paidInstallments: number;
+    }> = [];
+
+    for (const installment of installments) {
+      const amount = Number(installment.amount);
+      const creditCard = installment.purchase.creditCard;
+
+      let creditCardSummary = byCreditCard.find(
+        (item) => item.creditCardId === creditCard.id,
+      );
+
+      if (!creditCardSummary) {
+        creditCardSummary = {
+          creditCardId: creditCard.id,
+          creditCardName: creditCard.name,
+          creditCardBrand: creditCard.brand,
+          creditCardLastDigits: creditCard.lastDigits,
+          totalPending: 0,
+          totalPaid: 0,
+          totalPurchases: 0,
+          pendingInstallments: 0,
+          paidInstallments: 0,
+        };
+
+        byCreditCard.push(creditCardSummary);
+      }
+
+      creditCardSummary.totalPurchases += amount;
+
+      if (installment.status === "PENDING") {
+        creditCardSummary.totalPending += amount;
+        creditCardSummary.pendingInstallments += 1;
+      }
+
+      if (installment.status === "PAID") {
+        creditCardSummary.totalPaid += amount;
+        creditCardSummary.paidInstallments += 1;
+      }
+    }
+
+    return byCreditCard;
+  },
 };

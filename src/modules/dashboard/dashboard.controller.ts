@@ -14,4 +14,10 @@ export const dashboardController = {
 
     return reply.send(summary);
   },
+
+  async byCreditCard(request: FastifyRequest, reply: FastifyReply) {
+    const summary = await dashboardService.getByCreditCard(request.user.sub);
+
+    return reply.send(summary);
+  },
 };

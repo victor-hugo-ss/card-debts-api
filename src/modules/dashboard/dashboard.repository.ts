@@ -38,4 +38,30 @@ export const dashboardRepository = {
       },
     });
   },
+
+  findInstallmentsWithCreditCardByOwnerId(ownerId: string) {
+    return prisma.installment.findMany({
+      where: {
+        purchase: {
+          ownerId,
+        },
+      },
+      select: {
+        amount: true,
+        status: true,
+        purchase: {
+          select: {
+            creditCard: {
+              select: {
+                id: true,
+                name: true,
+                brand: true,
+                lastDigits: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  },
 };
