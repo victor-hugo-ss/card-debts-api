@@ -140,4 +140,21 @@ export const dashboardService = {
 
     return byCreditCard;
   },
+
+  async getUpcomingInstallments(ownerId: string) {
+    const installments =
+      await dashboardRepository.findUpcomingInstallmentsByOwnerId(ownerId);
+
+    return installments.map((installment) => ({
+      installmentId: installment.id,
+      amount: installment.amount,
+      dueDate: installment.dueDate,
+      friendId: installment.purchase.friend.id,
+      friendName: installment.purchase.friend.name,
+      purchaseId: installment.purchase.id,
+      purchaseDescription: installment.purchase.description,
+      creditCardId: installment.purchase.creditCard.id,
+      creditCardName: installment.purchase.creditCard.name,
+    }));
+  },
 };

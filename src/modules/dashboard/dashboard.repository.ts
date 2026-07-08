@@ -64,4 +64,42 @@ export const dashboardRepository = {
       },
     });
   },
+
+  findUpcomingInstallmentsByOwnerId(ownerId: string) {
+    return prisma.installment.findMany({
+      where: {
+        status: "PENDING",
+        purchase: {
+          ownerId,
+        },
+      },
+      select: {
+        id: true,
+        amount: true,
+        dueDate: true,
+        purchase: {
+          select: {
+            id: true,
+            description: true,
+            friend: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+            creditCard: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        dueDate: "asc",
+      },
+      take: 5,
+    });
+  },
 };

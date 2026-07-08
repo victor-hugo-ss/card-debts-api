@@ -8,6 +8,7 @@ import {
   getDashboardByCreditCardSchema,
   getDashboardByFriendSchema,
   getDashboardSummarySchema,
+  getDashboardUpcomingInstallmentsSchema,
 } from "./dashboard.schema.js";
 
 export async function dashboardRoutes(app: FastifyInstance) {
@@ -38,5 +39,14 @@ export async function dashboardRoutes(app: FastifyInstance) {
       schema: getDashboardByCreditCardSchema,
     },
     dashboardController.byCreditCard,
+  );
+
+  typedApp.get(
+    "/dashboard/upcoming-installments",
+    {
+      preHandler: [authMiddleware, roleMiddleware(["ADMIN"])],
+      schema: getDashboardUpcomingInstallmentsSchema,
+    },
+    dashboardController.upcomingInstallments,
   );
 }

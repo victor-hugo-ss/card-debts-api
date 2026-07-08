@@ -20,4 +20,12 @@ export const dashboardController = {
 
     return reply.send(summary);
   },
+
+  async upcomingInstallments(request: FastifyRequest, reply: FastifyReply) {
+    const installments = await dashboardService.getUpcomingInstallments(
+      request.user.sub,
+    );
+
+    return reply.send(installments);
+  },
 };
