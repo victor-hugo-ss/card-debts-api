@@ -5,7 +5,6 @@ import { authMiddleware } from "../../shared/middlewares/auth.middleware.js";
 import { roleMiddleware } from "../../shared/middlewares/role.middleware.js";
 import { usersController } from "./users.controller.js";
 import {
-  createUserSchema,
   getProfileSchema,
   listFriendsSchema,
   createFriendByAdminSchema,
@@ -13,14 +12,6 @@ import {
 
 export async function usersRoutes(app: FastifyInstance) {
   const typedApp = app.withTypeProvider<ZodTypeProvider>();
-
-  typedApp.post(
-    "/users",
-    {
-      schema: createUserSchema,
-    },
-    usersController.create,
-  );
 
   typedApp.get(
     "/me",

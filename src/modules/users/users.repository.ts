@@ -24,19 +24,6 @@ export const usersRepository = {
     });
   },
 
-  create(data: CreateUserData) {
-    return prisma.user.create({
-      data,
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-        createdAt: true,
-      },
-    });
-  },
-
   findById(id: string) {
     return prisma.user.findUnique({
       where: {
