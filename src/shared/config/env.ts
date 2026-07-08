@@ -9,6 +9,9 @@ const envSchema = z.object({
     .default("development"),
   DATABASE_URL: z.string().url(),
   JWT_SECRET: z.string().min(10),
+  ADMIN_NAME: z.string().min(1),
+  ADMIN_EMAIL: z.string().email(),
+  ADMIN_PASSWORD: z.string().min(6),
 });
 
 export const env = envSchema.parse(process.env);
