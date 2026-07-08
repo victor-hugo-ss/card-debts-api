@@ -7,6 +7,7 @@ import { usersRoutes } from "./modules/users/users.routes.js";
 import { authRoutes } from "./modules/auth/auth.routes.js";
 import { creditCardsRoutes } from "./modules/cards/cards.routes.js";
 import { purchasesRoutes } from "./modules/purchases/purchases.routes.js";
+import { debtsRoutes } from "./modules/debts/debts.routes.js";
 
 import {
   setupSwagger,
@@ -35,6 +36,7 @@ export async function buildApp() {
   app.register(authRoutes);
   app.register(creditCardsRoutes);
   app.register(purchasesRoutes);
+  app.register(debtsRoutes);
 
   await setupSwaggerUi(app);
 
