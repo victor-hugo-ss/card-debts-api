@@ -7,10 +7,13 @@ type CreatePurchaseServiceData = CreatePurchaseBody & {
 };
 
 function addMonths(date: Date, months: number) {
-  const newDate = new Date(date);
-  newDate.setMonth(newDate.getMonth() + months);
-
-  return newDate;
+  return new Date(
+    Date.UTC(
+      date.getUTCFullYear(),
+      date.getUTCMonth() + months,
+      date.getUTCDate(),
+    ),
+  );
 }
 
 function generateInstallments(
@@ -22,13 +25,14 @@ function generateInstallments(
 ) {
   const installmentAmount = amount / installmentsCount;
 
-  const firstDueDate = new Date(purchaseDate);
-  firstDueDate.setDate(dueDay);
+  const purchaseDay = purchaseDate.getUTCDate();
 
-  const purchaseDay = purchaseDate.getDate();
+  const firstDueDate = new Date(
+    Date.UTC(purchaseDate.getUTCFullYear(), purchaseDate.getUTCMonth(), dueDay),
+  );
 
   if (purchaseDay > closingDay || firstDueDate <= purchaseDate) {
-    firstDueDate.setMonth(firstDueDate.getMonth() + 1);
+    firstDueDate.setUTCMonth(firstDueDate.getUTCMonth() + 1);
   }
 
   return Array.from({ length: installmentsCount }).map((_, index) => ({
