@@ -4,7 +4,10 @@ import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { authMiddleware } from "../../shared/middlewares/auth.middleware.js";
 import { roleMiddleware } from "../../shared/middlewares/role.middleware.js";
 import { installmentsController } from "./installments.controller.js";
-import { listInstallmentsSchema } from "./installments.schema.js";
+import {
+  listInstallmentsSchema,
+  payInstallmentSchema,
+} from "./installments.schema.js";
 
 export async function installmentsRoutes(app: FastifyInstance) {
   const typedApp = app.withTypeProvider<ZodTypeProvider>();
@@ -16,5 +19,14 @@ export async function installmentsRoutes(app: FastifyInstance) {
       schema: listInstallmentsSchema,
     },
     installmentsController.list,
+  );
+
+  typedApp.patch(
+    "/installments/:id/pay",
+    {
+      preHandler: [authMiddleware, roleMiddleware(["ADMIN"])],
+      schema: payInstallmentSchema,
+    },
+    installmentsController.pay,
   );
 }

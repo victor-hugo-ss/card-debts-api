@@ -37,3 +37,19 @@ export const listInstallmentsSchema = {
     200: z.array(installmentResponseSchema),
   },
 };
+
+export const installmentParamsSchema = z.object({
+  id: z.string().uuid("Informe uma parcela válida"),
+});
+
+export const payInstallmentSchema = {
+  tags: ["Installments"],
+  summary: "Marca uma parcela como paga",
+  ...bearerAuthSecurity,
+  params: installmentParamsSchema,
+  response: {
+    200: installmentResponseSchema,
+  },
+};
+
+export type InstallmentParams = z.infer<typeof installmentParamsSchema>;
