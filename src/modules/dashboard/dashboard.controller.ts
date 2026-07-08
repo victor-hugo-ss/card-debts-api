@@ -8,4 +8,10 @@ export const dashboardController = {
 
     return reply.send(summary);
   },
+
+  async byFriend(request: FastifyRequest, reply: FastifyReply) {
+    const summary = await dashboardService.getByFriend(request.user.sub);
+
+    return reply.send(summary);
+  },
 };

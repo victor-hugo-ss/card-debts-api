@@ -32,4 +32,54 @@ export const dashboardService = {
       },
     );
   },
+
+  async getByFriend(ownerId: string) {
+    const installments =
+      await dashboardRepository.findInstallmentsWithFriendByOwnerId(ownerId);
+
+    const byFriend: Array<{
+      friendId: string;
+      friendName: string;
+      totalPending: number;
+      totalPaid: number;
+      totalPurchases: number;
+      pendingInstallments: number;
+      paidInstallments: number;
+    }> = [];
+
+    for (const installment of installments) {
+      const amount = Number(installment.amount);
+      const friend = installment.purchase.friend;
+
+      let friendSummary = byFriend.find((item) => item.friendId === friend.id);
+
+      if (!friendSummary) {
+        friendSummary = {
+          friendId: friend.id,
+          friendName: friend.name,
+          totalPending: 0,
+          totalPaid: 0,
+          totalPurchases: 0,
+          pendingInstallments: 0,
+          paidInstallments: 0,
+        };
+
+        byFriend.push(friendSummary);
+      }
+
+      friendSummary.totalPurchases += amount;
+
+      if (installment.status === "PENDING") {
+        friendSummary.totalPending += amount;
+        friendSummary.pendingInstallments += 1;
+      }
+
+      if (installment.status === "PAID") {
+        friendSummary.totalPaid += amount;
+        friendSummary.paidInstallments += 1;
+      }
+    }
+
+    return byFriend;
+  },
 };

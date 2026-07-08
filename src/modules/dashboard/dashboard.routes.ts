@@ -4,7 +4,10 @@ import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { authMiddleware } from "../../shared/middlewares/auth.middleware.js";
 import { roleMiddleware } from "../../shared/middlewares/role.middleware.js";
 import { dashboardController } from "./dashboard.controller.js";
-import { getDashboardSummarySchema } from "./dashboard.schema.js";
+import {
+  getDashboardByFriendSchema,
+  getDashboardSummarySchema,
+} from "./dashboard.schema.js";
 
 export async function dashboardRoutes(app: FastifyInstance) {
   const typedApp = app.withTypeProvider<ZodTypeProvider>();
@@ -16,5 +19,14 @@ export async function dashboardRoutes(app: FastifyInstance) {
       schema: getDashboardSummarySchema,
     },
     dashboardController.summary,
+  );
+
+  typedApp.get(
+    "/dashboard/by-friend",
+    {
+      preHandler: [authMiddleware, roleMiddleware(["ADMIN"])],
+      schema: getDashboardByFriendSchema,
+    },
+    dashboardController.byFriend,
   );
 }

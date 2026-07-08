@@ -14,4 +14,28 @@ export const dashboardRepository = {
       },
     });
   },
+
+  findInstallmentsWithFriendByOwnerId(ownerId: string) {
+    return prisma.installment.findMany({
+      where: {
+        purchase: {
+          ownerId,
+        },
+      },
+      select: {
+        amount: true,
+        status: true,
+        purchase: {
+          select: {
+            friend: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  },
 };
