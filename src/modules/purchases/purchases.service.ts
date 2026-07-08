@@ -9,13 +9,48 @@ type CreatePurchaseServiceData = CreatePurchaseBody & {
   ownerId: string;
 };
 
+function getLastDayOfMonth(year: number, month: number) {
+  return new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+}
+
+function createUTCDate(year: number, month: number, day: number) {
+  const lastDayOfMonth = getLastDayOfMonth(year, month);
+  const safeDay = Math.min(day, lastDayOfMonth);
+
+  return new Date(Date.UTC(year, month, safeDay));
+}
+
 function addMonths(date: Date, months: number) {
-  return new Date(
-    Date.UTC(
-      date.getUTCFullYear(),
-      date.getUTCMonth() + months,
-      date.getUTCDate(),
-    ),
+  return createUTCDate(
+    date.getUTCFullYear(),
+    date.getUTCMonth() + months,
+    date.getUTCDate(),
+  );
+}
+
+function calculateFirstDueDate(
+  purchaseDate: Date,
+  closingDay: number,
+  dueDay: number,
+) {
+  const purchaseYear = purchaseDate.getUTCFullYear();
+  const purchaseMonth = purchaseDate.getUTCMonth();
+  const purchaseDay = purchaseDate.getUTCDate();
+
+  const closingMonthOffset = purchaseDay <= closingDay ? 0 : 1;
+
+  const closingDate = createUTCDate(
+    purchaseYear,
+    purchaseMonth + closingMonthOffset,
+    closingDay,
+  );
+
+  const dueMonthOffset = dueDay <= closingDay ? 1 : 0;
+
+  return createUTCDate(
+    closingDate.getUTCFullYear(),
+    closingDate.getUTCMonth() + dueMonthOffset,
+    dueDay,
   );
 }
 
@@ -28,15 +63,7 @@ function generateInstallments(
 ) {
   const installmentAmount = amount / installmentsCount;
 
-  const purchaseDay = purchaseDate.getUTCDate();
-
-  const firstDueDate = new Date(
-    Date.UTC(purchaseDate.getUTCFullYear(), purchaseDate.getUTCMonth(), dueDay),
-  );
-
-  if (purchaseDay > closingDay || firstDueDate <= purchaseDate) {
-    firstDueDate.setUTCMonth(firstDueDate.getUTCMonth() + 1);
-  }
+  const firstDueDate = calculateFirstDueDate(purchaseDate, closingDay, dueDay);
 
   return Array.from({ length: installmentsCount }).map((_, index) => ({
     number: index + 1,
