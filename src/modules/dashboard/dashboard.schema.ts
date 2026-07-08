@@ -44,6 +44,15 @@ export const dashboardUpcomingInstallmentResponseSchema = z.object({
   creditCardName: z.string(),
 });
 
+export const dashboardByMonthResponseSchema = z.object({
+  month: z.string(),
+  totalPending: z.number(),
+  totalPaid: z.number(),
+  totalPurchases: z.number(),
+  pendingInstallments: z.number(),
+  paidInstallments: z.number(),
+});
+
 export const getDashboardSummarySchema = {
   tags: ["Dashboard"],
   summary: "Retorna o resumo geral do dashboard",
@@ -77,5 +86,14 @@ export const getDashboardUpcomingInstallmentsSchema = {
   ...bearerAuthSecurity,
   response: {
     200: z.array(dashboardUpcomingInstallmentResponseSchema),
+  },
+};
+
+export const getDashboardByMonthSchema = {
+  tags: ["Dashboard"],
+  summary: "Retorna o resumo do dashboard por mês",
+  ...bearerAuthSecurity,
+  response: {
+    200: z.array(dashboardByMonthResponseSchema),
   },
 };

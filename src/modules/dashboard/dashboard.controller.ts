@@ -28,4 +28,10 @@ export const dashboardController = {
 
     return reply.send(installments);
   },
+
+  async byMonth(request: FastifyRequest, reply: FastifyReply) {
+    const summary = await dashboardService.getByMonth(request.user.sub);
+
+    return reply.send(summary);
+  },
 };

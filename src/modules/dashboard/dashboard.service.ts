@@ -157,4 +157,52 @@ export const dashboardService = {
       creditCardName: installment.purchase.creditCard.name,
     }));
   },
+
+  async getByMonth(ownerId: string) {
+    const installments =
+      await dashboardRepository.findInstallmentsWithDueDateByOwnerId(ownerId);
+
+    const byMonth: Array<{
+      month: string;
+      totalPending: number;
+      totalPaid: number;
+      totalPurchases: number;
+      pendingInstallments: number;
+      paidInstallments: number;
+    }> = [];
+
+    for (const installment of installments) {
+      const amount = Number(installment.amount);
+      const month = installment.dueDate.toISOString().slice(0, 7);
+
+      let monthSummary = byMonth.find((item) => item.month === month);
+
+      if (!monthSummary) {
+        monthSummary = {
+          month,
+          totalPending: 0,
+          totalPaid: 0,
+          totalPurchases: 0,
+          pendingInstallments: 0,
+          paidInstallments: 0,
+        };
+
+        byMonth.push(monthSummary);
+      }
+
+      monthSummary.totalPurchases += amount;
+
+      if (installment.status === "PENDING") {
+        monthSummary.totalPending += amount;
+        monthSummary.pendingInstallments += 1;
+      }
+
+      if (installment.status === "PAID") {
+        monthSummary.totalPaid += amount;
+        monthSummary.paidInstallments += 1;
+      }
+    }
+
+    return byMonth;
+  },
 };

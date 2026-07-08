@@ -7,6 +7,7 @@ import { dashboardController } from "./dashboard.controller.js";
 import {
   getDashboardByCreditCardSchema,
   getDashboardByFriendSchema,
+  getDashboardByMonthSchema,
   getDashboardSummarySchema,
   getDashboardUpcomingInstallmentsSchema,
 } from "./dashboard.schema.js";
@@ -48,5 +49,14 @@ export async function dashboardRoutes(app: FastifyInstance) {
       schema: getDashboardUpcomingInstallmentsSchema,
     },
     dashboardController.upcomingInstallments,
+  );
+
+  typedApp.get(
+    "/dashboard/by-month",
+    {
+      preHandler: [authMiddleware, roleMiddleware(["ADMIN"])],
+      schema: getDashboardByMonthSchema,
+    },
+    dashboardController.byMonth,
   );
 }

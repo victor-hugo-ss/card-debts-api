@@ -102,4 +102,22 @@ export const dashboardRepository = {
       take: 5,
     });
   },
+
+  findInstallmentsWithDueDateByOwnerId(ownerId: string) {
+    return prisma.installment.findMany({
+      where: {
+        purchase: {
+          ownerId,
+        },
+      },
+      select: {
+        amount: true,
+        status: true,
+        dueDate: true,
+      },
+      orderBy: {
+        dueDate: "asc",
+      },
+    });
+  },
 };
