@@ -6,6 +6,7 @@ import { roleMiddleware } from "../../shared/middlewares/role.middleware.js";
 import { purchasesController } from "./purchases.controller.js";
 import {
   createPurchaseSchema,
+  getPurchaseSchema,
   listPurchasesSchema,
 } from "./purchases.schema.js";
 
@@ -28,5 +29,14 @@ export async function purchasesRoutes(app: FastifyInstance) {
       schema: listPurchasesSchema,
     },
     purchasesController.list,
+  );
+
+  typedApp.get(
+    "/purchases/:id",
+    {
+      preHandler: [authMiddleware, roleMiddleware(["ADMIN"])],
+      schema: getPurchaseSchema,
+    },
+    purchasesController.getById,
   );
 }

@@ -76,4 +76,14 @@ export const purchasesService = {
   async list(ownerId: string) {
     return purchasesRepository.findManyByOwnerId(ownerId);
   },
+
+  async getById(id: string, ownerId: string) {
+    const purchase = await purchasesRepository.findByIdAndOwnerId(id, ownerId);
+
+    if (!purchase) {
+      throw new AppError("Compra não encontrada", 404);
+    }
+
+    return purchase;
+  },
 };

@@ -98,4 +98,35 @@ export const purchasesRepository = {
       },
     });
   },
+
+  findByIdAndOwnerId(id: string, ownerId: string) {
+    return prisma.purchase.findFirst({
+      where: {
+        id,
+        ownerId,
+      },
+      include: {
+        friend: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        creditCard: {
+          select: {
+            id: true,
+            name: true,
+            brand: true,
+            lastDigits: true,
+          },
+        },
+        installments: {
+          orderBy: {
+            number: "asc",
+          },
+        },
+      },
+    });
+  },
 };

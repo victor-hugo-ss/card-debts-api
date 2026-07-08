@@ -50,6 +50,10 @@ export const purchaseResponseSchema = z.object({
   installments: z.array(installmentResponseSchema),
 });
 
+export const purchaseParamsSchema = z.object({
+  id: z.string().uuid("Informe um ID válido"),
+});
+
 export const createPurchaseSchema = {
   tags: ["Purchases"],
   summary: "Cadastra uma compra e gera suas parcelas",
@@ -69,4 +73,15 @@ export const listPurchasesSchema = {
   },
 };
 
+export const getPurchaseSchema = {
+  tags: ["Purchases"],
+  summary: "Busca uma compra por ID",
+  ...bearerAuthSecurity,
+  params: purchaseParamsSchema,
+  response: {
+    200: purchaseResponseSchema,
+  },
+};
+
+export type PurchaseParams = z.infer<typeof purchaseParamsSchema>;
 export type CreatePurchaseBody = z.infer<typeof createPurchaseBodySchema>;
