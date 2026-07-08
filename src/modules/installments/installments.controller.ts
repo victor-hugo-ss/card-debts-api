@@ -3,12 +3,21 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import { installmentsService } from "./installments.service.js";
 import {
   installmentParamsSchema,
+  listInstallmentsQuerySchema,
   type InstallmentParams,
+  type ListInstallmentsQuery,
 } from "./installments.schema.js";
 
 export const installmentsController = {
   async list(request: FastifyRequest, reply: FastifyReply) {
-    const installments = await installmentsService.list(request.user.sub);
+    const filters = listInstallmentsQuerySchema.parse(
+      request.query,
+    ) as ListInstallmentsQuery;
+
+    const installments = await installmentsService.list(
+      request.user.sub,
+      filters,
+    );
 
     return reply.send(installments);
   },

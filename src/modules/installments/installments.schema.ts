@@ -29,10 +29,21 @@ export const installmentResponseSchema = z.object({
   purchase: installmentPurchaseResponseSchema,
 });
 
+export const listInstallmentsQuerySchema = z.object({
+  status: z.enum(["PENDING", "PAID"]).optional(),
+  month: z
+    .string()
+    .regex(/^\d{4}-\d{2}$/, "Informe o mês no formato YYYY-MM")
+    .optional(),
+  friendId: z.string().uuid("Informe um amigo válido").optional(),
+  creditCardId: z.string().uuid("Informe um cartão válido").optional(),
+});
+
 export const listInstallmentsSchema = {
   tags: ["Installments"],
   summary: "Lista as parcelas cadastradas",
   ...bearerAuthSecurity,
+  querystring: listInstallmentsQuerySchema,
   response: {
     200: z.array(installmentResponseSchema),
   },
@@ -62,4 +73,5 @@ export const unpayInstallmentSchema = {
   },
 };
 
+export type ListInstallmentsQuery = z.infer<typeof listInstallmentsQuerySchema>;
 export type InstallmentParams = z.infer<typeof installmentParamsSchema>;

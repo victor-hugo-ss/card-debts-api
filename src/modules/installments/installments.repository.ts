@@ -1,13 +1,39 @@
+import type { Prisma } from "../../generated/prisma/client.js";
 import { prisma } from "../../shared/database/prisma-client.js";
 
 export const installmentsRepository = {
-  findManyByOwnerId(ownerId: string) {
-    return prisma.installment.findMany({
-      where: {
-        purchase: {
-          ownerId,
-        },
+  findManyByOwnerId(
+    ownerId: string,
+    filters: {
+      status?: "PENDING" | "PAID";
+      month?: string;
+      friendId?: string;
+      creditCardId?: string;
+    },
+  ) {
+    const where: Prisma.InstallmentWhereInput = {
+      purchase: {
+        ownerId,
+        friendId: filters.friendId,
+        creditCardId: filters.creditCardId,
       },
+      status: filters.status,
+    };
+
+    if (filters.month) {
+      const [year, month] = filters.month.split("-").map(Number);
+
+      const startDate = new Date(Date.UTC(year, month - 1, 1));
+      const endDate = new Date(Date.UTC(year, month, 1));
+
+      where.dueDate = {
+        gte: startDate,
+        lt: endDate,
+      };
+    }
+
+    return prisma.installment.findMany({
+      where,
       include: {
         purchase: {
           select: {

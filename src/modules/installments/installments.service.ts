@@ -1,9 +1,10 @@
 import { installmentsRepository } from "./installments.repository.js";
+import type { ListInstallmentsQuery } from "./installments.schema.js";
 import { AppError } from "../../shared/errors/app.error.js";
 
 export const installmentsService = {
-  async list(ownerId: string) {
-    return installmentsRepository.findManyByOwnerId(ownerId);
+  async list(ownerId: string, filters: ListInstallmentsQuery) {
+    return installmentsRepository.findManyByOwnerId(ownerId, filters);
   },
 
   async pay(id: string, ownerId: string) {
