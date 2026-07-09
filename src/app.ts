@@ -1,4 +1,5 @@
 import Fastify from "fastify";
+import fastifyCors from "@fastify/cors";
 import fastifyJwt from "@fastify/jwt";
 import { env } from "./shared/config/env.js";
 
@@ -22,6 +23,11 @@ import { errorHandler } from "./shared/middlewares/error.handler.js";
 export async function buildApp() {
   const app = Fastify({
     logger: true,
+  });
+
+  await app.register(fastifyCors, {
+    origin: env.FRONTEND_ORIGIN,
+    methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
   });
 
   await app.register(fastifyJwt, {
