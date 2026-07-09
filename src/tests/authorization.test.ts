@@ -24,7 +24,7 @@ describe("Authorization", () => {
 
     adminToken = adminLoginResponse.body.token;
 
-    const friendEmail = `friend-${Date.now()}@email.com`;
+    const friendEmail = `auth-friend-${Date.now()}@email.com`;
     const friendPassword = "123456";
 
     const createFriendResponse = await request(app.server)
@@ -50,7 +50,7 @@ describe("Authorization", () => {
     await prisma.user.deleteMany({
       where: {
         email: {
-          contains: "friend-",
+          startsWith: "auth-friend-",
         },
       },
     });

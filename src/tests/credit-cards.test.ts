@@ -58,7 +58,7 @@ describe("Credit Cards", () => {
     await prisma.user.deleteMany({
       where: {
         email: {
-          contains: "card-friend-",
+          startsWith: "card-friend-",
         },
       },
     });
