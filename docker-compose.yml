@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: card-debts-postgres
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: card_debts
+      POSTGRES_PASSWORD: card_debts
+      POSTGRES_DB: card_debts
+    volumes:
+      - card_debts_pg_data:/var/lib/postgresql/data
+
+volumes:
+  card_debts_pg_data:
