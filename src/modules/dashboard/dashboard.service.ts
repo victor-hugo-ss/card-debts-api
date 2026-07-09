@@ -1,12 +1,28 @@
 import { dashboardRepository } from "./dashboard.repository.js";
 
+type SummaryInstallment = Awaited<
+  ReturnType<typeof dashboardRepository.findInstallmentsByOwnerId>
+>[number];
+
+type UpcomingInstallment = Awaited<
+  ReturnType<typeof dashboardRepository.findUpcomingInstallmentsByOwnerId>
+>[number];
+
+type DashboardSummary = {
+  totalPending: number;
+  totalPaid: number;
+  totalPurchases: number;
+  pendingInstallments: number;
+  paidInstallments: number;
+};
+
 export const dashboardService = {
   async getSummary(ownerId: string) {
     const installments =
       await dashboardRepository.findInstallmentsByOwnerId(ownerId);
 
     return installments.reduce(
-      (summary, installment) => {
+      (summary: DashboardSummary, installment: SummaryInstallment) => {
         const amount = Number(installment.amount);
 
         summary.totalPurchases += amount;
@@ -145,7 +161,7 @@ export const dashboardService = {
     const installments =
       await dashboardRepository.findUpcomingInstallmentsByOwnerId(ownerId);
 
-    return installments.map((installment) => ({
+    return installments.map((installment: UpcomingInstallment) => ({
       installmentId: installment.id,
       amount: installment.amount,
       dueDate: installment.dueDate,

@@ -1,6 +1,10 @@
 import { AppError } from "../../shared/errors/app.error.js";
 import { debtsRepository } from "./debts.repository.js";
 
+type PendingInstallment = Awaited<
+  ReturnType<typeof debtsRepository.findPendingInstallmentsByFriendId>
+>[number];
+
 export const debtsService = {
   async listByFriend(friendId: string, ownerId: string) {
     const friend = await debtsRepository.findFriendById(friendId);
@@ -15,9 +19,12 @@ export const debtsService = {
         ownerId,
       );
 
-    const totalPending = installments.reduce((total, installment) => {
-      return total + Number(installment.amount);
-    }, 0);
+    const totalPending = installments.reduce(
+      (total: number, installment: PendingInstallment) => {
+        return total + Number(installment.amount);
+      },
+      0,
+    );
 
     return {
       friend,

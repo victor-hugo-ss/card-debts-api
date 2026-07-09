@@ -1,6 +1,10 @@
 import type { ListFriendInstallmentsQuery } from "./friend.schema.js";
 import { friendRepository } from "./friend.repository.js";
 
+type FriendInstallment = Awaited<
+  ReturnType<typeof friendRepository.findInstallmentsByFriendId>
+>[number];
+
 export const friendService = {
   async listPurchases(friendId: string) {
     return friendRepository.findPurchasesByFriendId(friendId);
@@ -18,32 +22,39 @@ export const friendService = {
       await friendRepository.findInstallmentsByFriendId(friendId);
 
     const totalDebt = installments.reduce(
-      (total, installment) => total + Number(installment.amount),
+      (total: number, installment: FriendInstallment) =>
+        total + Number(installment.amount),
       0,
     );
 
-    const pendingDebt = installments.reduce((total, installment) => {
-      if (installment.status === "PENDING") {
-        return total + Number(installment.amount);
-      }
+    const pendingDebt = installments.reduce(
+      (total: number, installment: FriendInstallment) => {
+        if (installment.status === "PENDING") {
+          return total + Number(installment.amount);
+        }
 
-      return total;
-    }, 0);
+        return total;
+      },
+      0,
+    );
 
-    const paidDebt = installments.reduce((total, installment) => {
-      if (installment.status === "PAID") {
-        return total + Number(installment.amount);
-      }
+    const paidDebt = installments.reduce(
+      (total: number, installment: FriendInstallment) => {
+        if (installment.status === "PAID") {
+          return total + Number(installment.amount);
+        }
 
-      return total;
-    }, 0);
+        return total;
+      },
+      0,
+    );
 
     const pendingInstallments = installments.filter(
-      (installment) => installment.status === "PENDING",
+      (installment: FriendInstallment) => installment.status === "PENDING",
     ).length;
 
     const paidInstallments = installments.filter(
-      (installment) => installment.status === "PAID",
+      (installment: FriendInstallment) => installment.status === "PAID",
     ).length;
 
     return {
