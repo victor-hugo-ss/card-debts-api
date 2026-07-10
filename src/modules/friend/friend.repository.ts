@@ -76,4 +76,26 @@ export const friendRepository = {
       },
     });
   },
+
+  findPendingInstallmentsByFriendIdAndMonth(
+    friendId: string,
+    startDate: Date,
+    endDate: Date,
+  ) {
+    return prisma.installment.findMany({
+      where: {
+        status: "PENDING",
+        dueDate: {
+          gte: startDate,
+          lt: endDate,
+        },
+        purchase: {
+          friendId,
+        },
+      },
+      select: {
+        amount: true,
+      },
+    });
+  },
 };

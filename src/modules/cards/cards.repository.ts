@@ -19,6 +19,7 @@ export const creditCardsRepository = {
     return prisma.creditCard.findMany({
       where: {
         ownerId,
+        isActive: true,
       },
       orderBy: {
         createdAt: "desc",
@@ -31,6 +32,7 @@ export const creditCardsRepository = {
       where: {
         id,
         ownerId,
+        isActive: true,
       },
     });
   },
@@ -44,10 +46,13 @@ export const creditCardsRepository = {
     });
   },
 
-  delete(id: string) {
-    return prisma.creditCard.delete({
+  deactivate(id: string) {
+    return prisma.creditCard.update({
       where: {
         id,
+      },
+      data: {
+        isActive: false,
       },
     });
   },

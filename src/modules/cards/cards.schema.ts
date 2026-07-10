@@ -85,7 +85,7 @@ export const updateCreditCardSchema = {
 
 export const deleteCreditCardSchema = {
   tags: ["Credit Cards"],
-  summary: "Remove um cartão de crédito",
+  summary: "Desativa um cartão de crédito",
   ...bearerAuthSecurity,
   params: creditCardParamsSchema,
   response: {
@@ -96,3 +96,4 @@ export const deleteCreditCardSchema = {
 export type UpdateCreditCardBody = z.infer<typeof updateCreditCardBodySchema>;
 export type CreditCardParams = z.infer<typeof creditCardParamsSchema>;
 export type CreateCreditCardBody = z.infer<typeof createCreditCardBodySchema>;
+

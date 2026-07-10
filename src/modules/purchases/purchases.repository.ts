@@ -22,6 +22,7 @@ export const purchasesRepository = {
       where: {
         id: friendId,
         role: "FRIEND",
+        isActive: true,
       },
     });
   },
@@ -31,6 +32,7 @@ export const purchasesRepository = {
       where: {
         id: creditCardId,
         ownerId,
+        isActive: true,
       },
     });
   },
@@ -159,3 +161,4 @@ export const purchasesRepository = {
     });
   },
 };
+

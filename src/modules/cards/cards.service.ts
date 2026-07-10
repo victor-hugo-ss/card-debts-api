@@ -42,6 +42,7 @@ export const creditCardsService = {
   async delete(id: string, ownerId: string) {
     await this.getById(id, ownerId);
 
-    await creditCardsRepository.delete(id);
+    await creditCardsRepository.deactivate(id);
   },
 };
+

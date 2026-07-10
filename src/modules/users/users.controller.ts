@@ -2,7 +2,11 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 
 import {
   createFriendByAdminBodySchema,
+  friendParamsSchema,
+  updateFriendBodySchema,
   type CreateFriendByAdminInput,
+  type FriendParams,
+  type UpdateFriendInput,
 } from "./users.schema.js";
 import { usersService } from "./users.service.js";
 
@@ -27,5 +31,22 @@ export const usersController = {
     const friend = await usersService.createFriendByAdmin(data);
 
     return reply.status(201).send(friend);
+  },
+
+  async updateFriend(request: FastifyRequest, reply: FastifyReply) {
+    const { id } = friendParamsSchema.parse(request.params) as FriendParams;
+    const data = updateFriendBodySchema.parse(request.body) as UpdateFriendInput;
+
+    const friend = await usersService.updateFriend(id, data);
+
+    return reply.send(friend);
+  },
+
+  async deleteFriend(request: FastifyRequest, reply: FastifyReply) {
+    const { id } = friendParamsSchema.parse(request.params) as FriendParams;
+
+    await usersService.deactivateFriend(id);
+
+    return reply.status(204).send();
   },
 };

@@ -2,8 +2,6 @@ import { z } from "zod";
 
 import { bearerAuthSecurity } from "../../shared/docs/security.js";
 
-const decimalSchema = z.union([z.string(), z.number(), z.any()]);
-
 export const listFriendInstallmentsQuerySchema = z.object({
   status: z.enum(["PENDING", "PAID"]).optional(),
   month: z
@@ -12,8 +10,18 @@ export const listFriendInstallmentsQuerySchema = z.object({
     .optional(),
 });
 
+export const friendMonthlySummaryQuerySchema = z.object({
+  month: z
+    .string()
+    .regex(/^\d{4}-\d{2}$/, "Informe o mês no formato YYYY-MM")
+    .optional(),
+});
+
 export type ListFriendInstallmentsQuery = z.infer<
   typeof listFriendInstallmentsQuerySchema
+>;
+export type FriendMonthlySummaryQuery = z.infer<
+  typeof friendMonthlySummaryQuerySchema
 >;
 
 export const friendPurchaseResponseSchema = z.object({
@@ -69,6 +77,12 @@ export const friendSummaryResponseSchema = z.object({
   paidInstallments: z.number(),
 });
 
+export const friendMonthlySummaryResponseSchema = z.object({
+  month: z.string(),
+  totalPending: z.string(),
+  pendingInstallments: z.number(),
+});
+
 export const listFriendPurchasesSchema = {
   tags: ["Friend"],
   summary: "Lista as compras do amigo logado",
@@ -94,5 +108,15 @@ export const friendSummarySchema = {
   ...bearerAuthSecurity,
   response: {
     200: friendSummaryResponseSchema,
+  },
+};
+
+export const friendMonthlySummarySchema = {
+  tags: ["Friend"],
+  summary: "Exibe o total pendente do mês para o amigo logado",
+  ...bearerAuthSecurity,
+  querystring: friendMonthlySummaryQuerySchema,
+  response: {
+    200: friendMonthlySummaryResponseSchema,
   },
 };

@@ -1,11 +1,8 @@
 import { prisma } from "../../shared/database/prisma-client.js";
-import type { CreateFriendByAdminInput } from "./users.schema.js";
-
-type CreateUserData = {
-  name: string;
-  email: string;
-  passwordHash: string;
-};
+import type {
+  CreateFriendByAdminInput,
+  UpdateFriendInput,
+} from "./users.schema.js";
 
 export const usersRepository = {
   findByEmail(email: string) {
@@ -17,17 +14,19 @@ export const usersRepository = {
   },
 
   findByEmailWithPassword(email: string) {
-    return prisma.user.findUnique({
+    return prisma.user.findFirst({
       where: {
         email,
+        isActive: true,
       },
     });
   },
 
   findById(id: string) {
-    return prisma.user.findUnique({
+    return prisma.user.findFirst({
       where: {
         id,
+        isActive: true,
       },
       select: {
         id: true,
@@ -39,10 +38,21 @@ export const usersRepository = {
     });
   },
 
+  findFriendById(id: string) {
+    return prisma.user.findFirst({
+      where: {
+        id,
+        role: "FRIEND",
+        isActive: true,
+      },
+    });
+  },
+
   findManyFriends() {
     return prisma.user.findMany({
       where: {
         role: "FRIEND",
+        isActive: true,
       },
       select: {
         id: true,
@@ -75,4 +85,40 @@ export const usersRepository = {
       },
     });
   },
+
+  updateFriend(
+    id: string,
+    data: UpdateFriendInput & { passwordHash?: string },
+  ) {
+    return prisma.user.update({
+      where: {
+        id,
+      },
+      data: {
+        name: data.name,
+        email: data.email,
+        passwordHash: data.passwordHash,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        createdAt: true,
+      },
+    });
+  },
+
+  deactivateFriend(id: string) {
+    return prisma.user.update({
+      where: {
+        id,
+      },
+      data: {
+        isActive: false,
+      },
+    });
+  },
 };
+
+
+

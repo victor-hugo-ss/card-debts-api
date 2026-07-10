@@ -1,0 +1,3 @@
+ALTER TABLE "users" ADD COLUMN "isActive" BOOLEAN NOT NULL DEFAULT true;
+ALTER TABLE "credit_cards" ADD COLUMN "isActive" BOOLEAN NOT NULL DEFAULT true;
+

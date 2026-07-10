@@ -23,6 +23,7 @@ model User {
   email        String   @unique
   passwordHash String
   role         Role     @default(FRIEND)
+  isActive     Boolean  @default(true)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -42,6 +43,7 @@ model CreditCard {
   closingDay Int
   dueDay     Int
   ownerId    String
+  isActive   Boolean  @default(true)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
@@ -90,3 +92,6 @@ model Installment {
 
   @@map("installments")
 }
+
+
+

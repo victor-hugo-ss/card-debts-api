@@ -4,6 +4,7 @@ import { authMiddleware } from "../../shared/middlewares/auth.middleware.js";
 import { roleMiddleware } from "../../shared/middlewares/role.middleware.js";
 import { friendController } from "./friend.controller.js";
 import {
+  friendMonthlySummarySchema,
   friendSummarySchema,
   listFriendInstallmentsSchema,
   listFriendPurchasesSchema,
@@ -35,5 +36,13 @@ export const friendRoutes: FastifyPluginAsyncZod = async (app) => {
       schema: friendSummarySchema,
     },
     friendController.getSummary,
+  );
+
+  app.get(
+    "/friend/monthly-summary",
+    {
+      schema: friendMonthlySummarySchema,
+    },
+    friendController.getMonthlySummary,
   );
 };

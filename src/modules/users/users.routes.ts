@@ -5,9 +5,11 @@ import { authMiddleware } from "../../shared/middlewares/auth.middleware.js";
 import { roleMiddleware } from "../../shared/middlewares/role.middleware.js";
 import { usersController } from "./users.controller.js";
 import {
+  createFriendByAdminSchema,
+  deleteFriendSchema,
   getProfileSchema,
   listFriendsSchema,
-  createFriendByAdminSchema,
+  updateFriendSchema,
 } from "./users.schema.js";
 
 export async function usersRoutes(app: FastifyInstance) {
@@ -22,7 +24,7 @@ export async function usersRoutes(app: FastifyInstance) {
     usersController.me,
   );
 
-  app.get(
+  typedApp.get(
     "/users/friends",
     {
       preHandler: [authMiddleware, roleMiddleware(["ADMIN"])],
@@ -31,12 +33,30 @@ export async function usersRoutes(app: FastifyInstance) {
     usersController.listFriends,
   );
 
-  app.post(
+  typedApp.post(
     "/admin/friends",
     {
       preHandler: [authMiddleware, roleMiddleware(["ADMIN"])],
       schema: createFriendByAdminSchema,
     },
     usersController.createFriendByAdmin,
+  );
+
+  typedApp.patch(
+    "/admin/friends/:id",
+    {
+      preHandler: [authMiddleware, roleMiddleware(["ADMIN"])],
+      schema: updateFriendSchema,
+    },
+    usersController.updateFriend,
+  );
+
+  typedApp.delete(
+    "/admin/friends/:id",
+    {
+      preHandler: [authMiddleware, roleMiddleware(["ADMIN"])],
+      schema: deleteFriendSchema,
+    },
+    usersController.deleteFriend,
   );
 }

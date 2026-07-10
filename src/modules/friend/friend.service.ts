@@ -1,9 +1,29 @@
-import type { ListFriendInstallmentsQuery } from "./friend.schema.js";
+import type {
+  FriendMonthlySummaryQuery,
+  ListFriendInstallmentsQuery,
+} from "./friend.schema.js";
 import { friendRepository } from "./friend.repository.js";
 
 type FriendInstallment = Awaited<
   ReturnType<typeof friendRepository.findInstallmentsByFriendId>
 >[number];
+
+type MonthlyInstallment = Awaited<
+  ReturnType<typeof friendRepository.findPendingInstallmentsByFriendIdAndMonth>
+>[number];
+
+function getCurrentMonth() {
+  return new Date().toISOString().slice(0, 7);
+}
+
+function getMonthDateRange(month: string) {
+  const [year, monthNumber] = month.split("-").map(Number);
+
+  return {
+    startDate: new Date(Date.UTC(year, monthNumber - 1, 1)),
+    endDate: new Date(Date.UTC(year, monthNumber, 1)),
+  };
+}
 
 export const friendService = {
   async listPurchases(friendId: string) {
@@ -63,6 +83,34 @@ export const friendService = {
       paidDebt: paidDebt.toString(),
       pendingInstallments,
       paidInstallments,
+    };
+  },
+
+  async getMonthlySummary(
+    friendId: string,
+    filters: FriendMonthlySummaryQuery,
+  ) {
+    const month = filters.month ?? getCurrentMonth();
+    const { startDate, endDate } = getMonthDateRange(month);
+
+    const installments =
+      await friendRepository.findPendingInstallmentsByFriendIdAndMonth(
+        friendId,
+        startDate,
+        endDate,
+      );
+
+    const totalPending = installments.reduce(
+      (total: number, installment: MonthlyInstallment) => {
+        return total + Number(installment.amount);
+      },
+      0,
+    );
+
+    return {
+      month,
+      totalPending: totalPending.toString(),
+      pendingInstallments: installments.length,
     };
   },
 };
